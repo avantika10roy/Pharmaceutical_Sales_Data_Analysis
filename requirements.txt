@@ -1,0 +1,15 @@
+torch
+numpy
+scipy
+pandas
+plotly
+folium
+seaborn
+fbprophet
+streamlit
+geopandas
+pycountry
+statsmodels
+scikit-learn
+streamlit-folium
+matplotlib.pyplot
