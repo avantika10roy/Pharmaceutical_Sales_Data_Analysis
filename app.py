@@ -87,39 +87,12 @@ class App:
                     # FILTERS FOR ADJUSTMENT
 
                     st.sidebar.subheader("Filter Your Data")
-                    # SLIDERS
-                    # Select Price Range
-                    selected_price_range = st.sidebar.slider(
-                                                "Select Price Range:",
-                                                min_value = min(data['Price']),
-                                                max_value = max(data['Price']),
-                                                value     = (min(data['Price']), max(data['Price'])))
-                    # Select Sales Range
-                    selected_sales_range = st.sidebar.slider(
-                                                "Select Sales Range:",
-                                                min_value = min(data['Sales']),
-                                                max_value = max(data['Sales']),
-                                                value     = (min(data['Sales']), max(data['Sales'])))
-                    
-                    # Select Quantity Range
-                    selected_quantity_range = st.sidebar.slider(
-                                                "Select Quantity Range:",
-                                                min_value = min(data['Quantity']),
-                                                max_value = max(data['Quantity']),
-                                                value     = (min(data['Quantity']), max(data['Quantity'])))
-                    
                     # Select Year Range
                     selected_date_range = st.sidebar.multiselect("Select Year Range:",
                                                                 data['Year'].unique(),
                                                                 default = data['Year'].unique())
                     
-                    filtered_data = data[(data['Price'] >= selected_price_range[0]) &
-                                         (data['Price'] <= selected_price_range[1]) &
-                                         (data['Sales'] >= selected_sales_range[0]) &
-                                         (data['Sales'] <= selected_sales_range[1]) &
-                                         (data['Quantity'] >= selected_quantity_range[0]) &
-                                         (data['Quantity'] <= selected_quantity_range[1]) &
-                                          data['Year'].isin(selected_date_range)]
+                    filtered_data = data[data['Year'].isin(selected_date_range)]
                     
                     return filtered_data
                 
