@@ -11,4 +11,4 @@ pycountry
 statsmodels
 scikit-learn
 streamlit-folium
-matplotlib.pyplot
+matplotlib
