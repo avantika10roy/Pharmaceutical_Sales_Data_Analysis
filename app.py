@@ -681,13 +681,61 @@ class App:
                                 st.plotly_chart(plot, use_container_width = True)
                             except Exception as e:
                                 self.log.error(f'Could not load plot: {e}')
-                            st.markdown(f"""
-                                        #### Insights:
-                                        - Sales experienced significant volatility from {res.iloc[0,0]}-{res.iloc[47,0]}, with {res.iloc[35,0]} showing a dramatic spike in {res.iloc[31,1]} (reaching around {res.iloc[31,2]/1000000:.0f}M) followed by steep declines, suggesting either seasonal campaigns or market disruptions.
-                                        - A rapid decline is seen in {res.iloc[12,0]}'s sale from {res.iloc[33,1]} to {res.iloc[35,1]} going from over {res.iloc[31,2]/1000000:.0f}M to {res.iloc[33,2]/1000000:.0f}M.
-                                        - Overall sale is the highest in {res.iloc[16,0]} and lowest in {res.iloc[45,0]}.
-                                        - Seasonal changes around {res.iloc[1,1]}, {res.iloc[2,1]}, {res.iloc[5,1]} and {res.iloc[10,1]} are the main cause of sale fluctuations while sale remains almost stable for the rest of the months.
-                                        """)
+                            # Ensure res is a DataFrame and num_rows is defined
+                            num_rows = len(res)
+                            insights = "#### Insights:\n"
+
+                            # Volatility and spike (requires at least rows 0, 31, 35, and 47)
+                            if num_rows > 47:
+                                start_period = res.iloc[0, 0]
+                                end_period = res.iloc[47, 0]
+                                spike_month = res.iloc[35, 0]
+                                spike_label = res.iloc[31, 1]
+                                spike_value = res.iloc[31, 2]
+                                insights += (
+                                    f"- Sales experienced significant volatility from **{start_period}** to **{end_period}**, "
+                                    f"with **{spike_month}** showing a dramatic spike in **{spike_label}** "
+                                    f"(reaching around **{spike_value / 1_000_000:.0f}M**), followed by steep declines — "
+                                    f"suggesting either **seasonal campaigns** or **market disruptions**.\n"
+                                )
+
+                            # Rapid decline (requires rows 12, 31, 33, 35)
+                            if num_rows > 35:
+                                decline_month = res.iloc[12, 0]
+                                decline_start_label = res.iloc[33, 1]
+                                decline_end_label = res.iloc[35, 1]
+                                decline_start_value = res.iloc[31, 2]
+                                decline_end_value = res.iloc[33, 2]
+                                insights += (
+                                    f"- A rapid decline is seen in **{decline_month}**’s sales from **{decline_start_label}** to **{decline_end_label}**, "
+                                    f"going from over **{decline_start_value / 1_000_000:.0f}M** to **{decline_end_value / 1_000_000:.0f}M**.\n"
+                                )
+
+                            # Highest and lowest months (requires rows 16 and 45)
+                            if num_rows > 45:
+                                highest_month = res.iloc[16, 0]
+                                lowest_month = res.iloc[45, 0]
+                                insights += (
+                                    f"- Overall sales were the **highest in {highest_month}** and **lowest in {lowest_month}**.\n"
+                                )
+
+                            # Seasonal months (requires rows 1, 2, 5, 10)
+                            if num_rows > 10:
+                                m1 = res.iloc[1, 1]
+                                m2 = res.iloc[2, 1]
+                                m3 = res.iloc[5, 1]
+                                m4 = res.iloc[10, 1]
+                                insights += (
+                                    f"- Seasonal changes around **{m1}**, **{m2}**, **{m3}**, and **{m4}** are the main cause of sales fluctuations, "
+                                    f"while sales remain almost stable for the rest of the months.\n"
+                                )
+
+                            # Fallback if data is insufficient
+                            if insights.strip() == "#### Insights:":
+                                insights += "- Not enough data to generate detailed insights. Please provide a larger dataset.\n"
+
+                            # Display
+                            st.markdown(insights)
 
                         st.subheader('Grouped Bar Chart on Sub-Channel on Channels')
                         with st.expander('Click to view grouped bar chart:', expanded = True):
